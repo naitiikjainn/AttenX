@@ -29,7 +29,7 @@ class _MandatoryAttendanceScreenState
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TransportAttendanceBloc>().add(FetchTransportAttendance());
     });
   }
