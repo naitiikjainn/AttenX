@@ -1,16 +1,25 @@
-# erp_app_v2
+# AKGEC ERP
 
-A new Flutter project.
+Flutter app for AKGEC ERP — attendance, profile, timetable, and transport attendance.
 
-## Getting Started
+## Structure
 
-This project is a starting point for a Flutter application.
+```
+lib/
+├── core/           # router, update check, background customizer
+├── features/
+│   ├── auth/       # login and splash
+│   ├── home/       # dashboard and drawer screens
+│   ├── attendance/ # attendance fetching and transport
+│   ├── profile/    # student profile
+│   └── timetable/  # transport timetable bloc
+├── main.dart
+└── main_shell.dart
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Run
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter pub get
+flutter run
+```
