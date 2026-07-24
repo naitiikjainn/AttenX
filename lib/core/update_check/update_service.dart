@@ -8,7 +8,7 @@ class UpdateService {
   static Future<void> initialize() async {
     await _remoteConfig.setConfigSettings(RemoteConfigSettings(
       fetchTimeout: const Duration(seconds: 10),
-      minimumFetchInterval: Duration.zero, // SET TO ZERO FOR TESTING
+      minimumFetchInterval: const Duration(hours: 12),
     ));
 
     await _remoteConfig.setDefaults({'min_required_version': '1.0.0'});
