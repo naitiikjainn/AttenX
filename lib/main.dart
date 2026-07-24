@@ -1,0 +1,68 @@
+import 'package:erp_app_v2/features/attendance/bloc/final_attendance_Bloc/final_attendance_bloc.dart';
+import 'package:erp_app_v2/features/auth/bloc/auth_bloc/auth_bloc.dart';
+import 'package:erp_app_v2/features/attendance/data/final_attendance_repo.dart';
+import 'package:erp_app_v2/features/auth/splash_screen.dart';
+import 'package:erp_app_v2/widget_background_callback.dart';
+import 'package:erp_app_v2/core/update_check/update_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:erp_app_v2/features/auth/data/auth_repository.dart';
+import 'package:erp_app_v2/features/profile/data/profile_repository.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:home_widget/home_widget.dart';
+import 'package:erp_app_v2/core/router/app_router.dart';
+
+Future<void> clearOnUpdate() async {
+  final prefs = await SharedPreferences.getInstance();
+  final packageInfo = await PackageInfo.fromPlatform();
+  final currentVersion = packageInfo.version;
+  final storedVersion = prefs.getString('appVersion');
+
+  if (storedVersion != currentVersion) {
+    const storage = FlutterSecureStorage();
+    await storage.deleteAll();
+    await prefs.setString('appVersion', currentVersion);
+    debugPrint('Version changed $storedVersion → $currentVersion, storage cleared');
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HomeWidget.registerBackgroundCallback(widgetBackgroundCallback);
+  await Firebase.initializeApp();
+  await UpdateService.initialize();
+
+  final updateRequired = await UpdateService.isUpdateRequired();
+  debugPrint("Update required: $updateRequired");
+
+  runApp(MyApp(updateRequired: updateRequired));
+}
+
+class MyApp extends StatelessWidget {
+  final AuthRepository authRepository = AuthRepository();
+  final ProfileRepository profileRepository = ProfileRepository();
+  final bool updateRequired;
+
+  MyApp({super.key, required this.updateRequired});
+
+  @override
+  Widget build(BuildContext context) {
+    final router = AppRouter.getRouter(updateRequired);
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(authRepository),
+        ),
+        BlocProvider(create: (_) => AttendanceBloc(AttendanceRepository())),
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+      ),
+    );
+  }
+}
