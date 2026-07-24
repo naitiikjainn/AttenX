@@ -12,4 +12,9 @@ class BackgroundStorage {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt(_key) ?? 0;
   }
+
+  static Future<void> reset() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_key);
+  }
 }
