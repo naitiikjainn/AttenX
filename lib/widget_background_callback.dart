@@ -10,8 +10,6 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
 
   try {
     final repo = AttendanceRepository();
-    // repo._getHeaders() reads from FlutterSecureStorage automatically
-
     final semesters = await repo.fetchSemesters();
     if (semesters.isEmpty) return;
 

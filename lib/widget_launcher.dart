@@ -8,9 +8,9 @@ class WidgetLauncher {
   static Future<void> showWidgetPicker(BuildContext context, String widgetName) async {
     try {
       final bool supported = await _channel.invokeMethod('showWidgetPicker', {'widget': widgetName});
-      if (!supported) {
+      if (!supported && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please add the widget manually.')),
+          const SnackBar(content: Text('Please add the widget manually.')),
         );
       }
     } on PlatformException catch (e) {
